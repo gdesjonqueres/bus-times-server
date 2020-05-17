@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+# ------------------------------------------------------------------
+# Check for new archive and run imports
+#
+# ------------------------------------------------------------------
+
+echo "\n-----------------------------------------------\n"
+echo "`date "+%Y-%m-%d %H:%M:%S"` Auto update starting ...\n"
+
+# exec update with redirecting standard input to use default choice at user prompts
+./update_gtfs --no-verbose <<STDIN -o other --options
+
+
+
+
+
+
+STDIN
+
+echo "\n\n`date "+%Y-%m-%d %H:%M:%S"` Auto update finished\n"

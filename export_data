@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+echo "\n-----------------------------------------------\n" >> ./logs/export.log
+echo "`date "+%Y-%m-%d %H:%M:%S"` Export starting ...\n" >> ./logs/export.log
+
+pipenv run python -m data.export --no-verbose >> ./logs/export.log 2>&1
+
+cp ./data/exports/data.json ../bus-times-app/data/app/app-data.json >> ./logs/export.log 2>&1
+cp ./data/exports/data-readable.json ../bus-times-app/data/app/app-data-readable.json >> ./logs/export.log 2>&1
+
+echo "\n\n`date "+%Y-%m-%d %H:%M:%S"` Export finished\n" >> ./logs/export.log

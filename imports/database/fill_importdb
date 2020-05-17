@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+rm import.db
+
+sqlite3 -batch import.db << "EOF"
+.mode csv
+.import ../download/current/stops.txt stops
+.import ../download/current/trips.txt trips
+.import ../download/current/routes.txt routes
+.import ../download/current/direction_names_exceptions.txt route_directions
+.import ../download/current/stop_times.txt stop_times
+.import ../download/current/feed_info.txt feed_info
+.import ../download/current/calendar.txt calendar
+EOF

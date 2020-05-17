@@ -1,0 +1,76 @@
+type Query {
+  stops: [Stop]
+  services: [Service]
+  routes: [Route]
+  trips: [Trip]
+  trip(id: ID, code: String): Trip!
+  timetableInfos: TimetableInfos!
+}
+
+type TimetableInfos {
+  version: String
+  published: String
+  begin: DateTime
+  end: DateTime
+  generated: DateTime
+}
+
+type Service {
+  id: ID!
+  days: String!
+}
+
+type Stop {
+  id: ID!
+  code: String!
+  name: String!
+  description: String
+}
+
+type Route {
+  id: ID!
+  code: String!
+  name: String!
+  from: String
+  to: String!
+  direction: String!
+}
+
+type Trip {
+  id: ID!
+  code: String!
+  name: String!
+  from: String
+  to: String
+  description: String
+  busTrips: [BusTrip]
+  scheduledBuses(fromDate: DateTime, timeFrame: Int): ScheduledBusesResult
+  liveBuses(timeFrame: Int): ScheduledBusesResult
+}
+
+type BusTrip {
+  id: ID!
+  route: Route!
+  stop: Stop!
+  minutes: String
+  timetable: [TimeSchedule]
+}
+
+type BusSchedule {
+  busTrip: BusTrip!
+  scheduledAt: String!
+  service: Service!
+}
+
+type ScheduledBusesResult {
+  error: String
+  results: [BusSchedule]
+}
+
+type TimeSchedule {
+  service: Service!
+  time: String!
+  minutes: Int!
+}
+
+scalar DateTime

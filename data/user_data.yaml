@@ -1,0 +1,134 @@
+# User defined routes, stops, trips to generate in the app db
+
+# List of routes to
+# pattern: {route code}-{direction name as in translink files}
+routes:
+  - 229-Lynn_Valley
+  # - 229-Lonsdale_Quay
+  - 230-Upper_Lonsdale
+  # - 230-Lonsdale_Quay
+  - 232-Phibbs_Exchange
+  - 232-Grouse_Mountain
+  - 236-Grouse_Mountain
+  - 236-Lonsdale_Quay
+  - 239-Capilano_University
+  - 239-Park_Royal
+  - 240-15th_Street
+  # - 240-Vancouver
+  - 246-Highland
+  # - 246-Downtown
+  - 249-Delbrook
+  - 249-Lonsdale_Quay
+  - 255-Capilano_University
+  # - 255-Dundarave
+
+# {stop description}: {translink stop code}
+stops:
+  232@Capilano_Bridge: 54305
+  236@Capilano_Bridge: 54397
+  246@Capilano_Bridge: 54482
+  232@Delbrook_Center: 60111
+  249@Delbrook_Center: 54508
+  3rd_West@Chesterfield: 54279
+  Lonsdale_North@8th: 54145
+  Esplanade_West: 54375
+  # Lonsdale_North@4th: 54143 # removed ?
+  Park_Royal: 54411
+  Capilano_Mall: 54407
+  Bay2@Quay: 54196
+  Bay3@Quay: 58724
+  Bay4@Quay: 58725
+  # Bay7@Quay: 54516
+  # Bay8@Quay: 54410
+  # Bay9@Quay: 54134
+  # Bay10@Quay: 50980
+
+# {description}: {translink service id}
+services:
+  M-F: 1
+  Sat: 2
+  Sun: 3
+
+trips:
+  dst01:
+    name: "Capilano Bridge > Home"
+    buses:
+      - route: 232-Phibbs_Exchange
+        stop: 232@Capilano_Bridge
+      - route: 236-Lonsdale_Quay
+        stop: 236@Capilano_Bridge
+      - route: 246-Highland
+        stop: 246@Capilano_Bridge
+
+  dst02:
+    name: "Home > Capilano Bridge"
+    buses:
+      - route: 232-Grouse_Mountain
+        stop: Lonsdale_North@8th
+        time: 23
+      - route: 236-Grouse_Mountain
+        stop: Esplanade_West
+        time: 19
+      - route: 249-Delbrook
+        stop: 3rd_West@Chesterfield
+        time: 39
+
+  dst03:
+    name: "Delbrook Center > Home"
+    buses:
+      - route: 232-Phibbs_Exchange
+        stop: 232@Delbrook_Center
+      - route: 249-Lonsdale_Quay
+        stop: 249@Delbrook_Center
+
+  dst04:
+    name: "Home > Delbrook Center"
+    buses:
+      - route: 232-Grouse_Mountain
+        stop: Lonsdale_North@8th
+      - route: 249-Delbrook
+        stop: 3rd_West@Chesterfield
+
+  dst05:
+    name: "Home > Upper Lonsdale"
+    buses:
+      # - route: 229-Lynn_Valley
+      #   stop: Lonsdale_North@4th
+      # - route: 230-Upper_Lonsdale
+      #   stop: Lonsdale_North@4th
+      - route: 232-Grouse_Mountain
+        stop: Lonsdale_North@8th
+
+  dst06:
+    name: "Home > Cap.Mall/P.Royal"
+    buses:
+      - route: 239-Park_Royal
+        stop: 3rd_West@Chesterfield
+
+  dst07:
+    name: "Park Royal > Home"
+    buses:
+      - route: 239-Capilano_University
+        stop: Park_Royal
+      - route: 255-Capilano_University
+        stop: Park_Royal
+
+  dst08:
+    name: "Capilano Mall > Home"
+    buses:
+      - route: 239-Capilano_University
+        stop: Capilano_Mall
+      - route: 255-Capilano_University
+        stop: Capilano_Mall
+      - route: 240-15th_Street
+        stop: Capilano_Mall
+
+  dst09:
+    name: "Lonsdale Quay > Home"
+    buses:
+      - route: 229-Lynn_Valley
+        stop: Bay3@Quay
+      - route: 230-Upper_Lonsdale
+        stop: Bay4@Quay
+      - route: 239-Park_Royal
+        stop: Bay2@Quay

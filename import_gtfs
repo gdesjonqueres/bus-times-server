@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+# ------------------------------------------------------------------
+# Import current translink archive in import db and create app data
+#
+# usage: ./import_gtfs [archive] [--no-verbose]
+# archive: if importing a different archive than current
+# --no-verbose: disable sql output
+# ------------------------------------------------------------------
+
+# (cd ./imports/database ; ./fill_importdb)
+
+pipenv run python -m imports "$@" || exit 1
+
+pipenv run python -m data.create "$@" || exit 1
+
+./export_data
