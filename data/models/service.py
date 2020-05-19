@@ -1,4 +1,9 @@
-from .base import *
+import uuid
+from sqlalchemy import Column, String, Boolean, Date
+
+from tools.sqlalchemy_guid import GUID
+
+from .base import Base
 
 
 class Service(Base):
@@ -19,9 +24,9 @@ class Service(Base):
     ext_id = Column(String(9), unique=True, index=True)
 
     @classmethod
-    def get_service_for_date(cls, date):
+    def get_service_for_date(cls, session, date):
         day = date.strftime('%a').lower()
-        return db_session.query(cls).filter(getattr(cls, day)).one()
+        return session.query(cls).filter(getattr(cls, day)).one()
 
     def __repr__(self):
         return '<Service %r>' % self.days

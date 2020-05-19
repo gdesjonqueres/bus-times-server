@@ -7,10 +7,15 @@ from uuid import UUID
 from tools.utils import save_to_json
 
 from .connectdb import db_session
-from .models import *
-
-import json
-from uuid import UUID
+from .models import (
+    Trip,
+    BusTrip,
+    Stop,
+    TimeSchedule,
+    Schedule,
+    Service,
+    RouteTo
+)
 
 
 class UUIDEncoder(json.JSONEncoder):
@@ -21,7 +26,7 @@ class UUIDEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-schedule = Schedule.get()
+schedule = Schedule.get(db_session)
 trips = {t.code: t.to_dict() for t in db_session.query(Trip).all()}
 stops = {s.id.hex: s.to_dict() for s in db_session.query(Stop).all()}
 routes_to = {rt.id.hex: rt.to_dict() for rt in db_session.query(RouteTo).all()}

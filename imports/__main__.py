@@ -19,7 +19,8 @@ def run():
         subprocess.run('./fill_importdb',
                        cwd=config.paths['importdb-dir'], check=True)
     except subprocess.CalledProcessError as err:
-        raise Exception('Unable to execute import db fill script')
+        raise Exception(
+            f'Unable to execute import db fill script: {err.output}')
 
 
 if __name__ == '__main__':

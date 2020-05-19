@@ -10,7 +10,7 @@ async def fetch(session, key, item, base_url='http://google.com'):
 async def main():
     d = {'a': '', 'b': '', 'c': ''}
     async with aiohttp.ClientSession() as session:
-        ####tasks = map(functools.partial(fetch, session), *zip(*d.items()))
+        # tasks = map(functools.partial(fetch, session), *zip(*d.items()))
         tasks = [fetch(session, *item) for item in d.items()]
         responses = await asyncio.gather(*tasks)
     print(dict(responses))

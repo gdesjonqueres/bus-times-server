@@ -1,8 +1,12 @@
 from datetime import datetime
 
+from sqlalchemy import Column, Integer, DateTime, String
+from sqlalchemy.orm import reconstructor
+
 from tools.datetime import Timezone
 
-from .base import *
+from .base import Base
+# from .base import *
 
 
 class Schedule(Base):
@@ -32,9 +36,9 @@ class Schedule(Base):
         self.generated = Timezone('utc').localize(self.generated)
 
     @classmethod
-    def get(cls):
+    def get(cls, session):
         if not cls._instance:
-            cls._instance = db_session.query(cls).filter_by(id=1).one()
+            cls._instance = session.query(cls).filter_by(id=1).one()
         return cls._instance
 
     def is_valid_for(self, date: datetime) -> bool:

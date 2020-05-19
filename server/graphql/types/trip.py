@@ -19,7 +19,8 @@ trip.set_alias('to', 'trip_to')
 @convert_kwargs_to_snake_case
 def resolve_scheduled_buses(obj, _, *, from_date=None, time_frame=None):
     try:
-        return {'results': static_api.get_coming_buses(obj, from_date, time_frame)}
+        return {'results': static_api.get_coming_buses(
+            obj, from_date, time_frame)}
     except ValueError as err:
         return {'error': str(err)}
 

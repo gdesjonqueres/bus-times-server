@@ -56,7 +56,8 @@ def create_route(code: str) -> Route:
 
 
 def create_route_to(route: str, direction_name: str) -> RouteTo:
-    return RouteTo(route=route, **_import_route_direction(route.name, direction_name))
+    return RouteTo(
+        route=route, **_import_route_direction(route.name, direction_name))
 
 
 def create_stop(code: str, description: str) -> Stop:
@@ -67,7 +68,8 @@ def create_service(name: str, ext_id: str) -> Service:
     return Service(days=name, **_import_service(ext_id), ext_id=ext_id)
 
 
-def create_bus_trip(route_to: RouteTo, stop_from: Stop, minutes: int = None) -> BusTrip:
+def create_bus_trip(route_to: RouteTo, stop_from: Stop,
+                    minutes: int = None) -> BusTrip:
     # make sure a timetable exists for this bus trip
     try:
         get_timetable(route_to.route.name, route_to.direction, stop_from.code)

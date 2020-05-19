@@ -1,8 +1,14 @@
+import uuid
 from datetime import timedelta
 
+from sqlalchemy import Column, String, between
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm.session import object_session
+
+from tools.sqlalchemy_guid import GUID
 from tools.datetime import minutes_since_midnight_int
 
-from .base import *
+from .base import Base
 from .time_schedule import TimeSchedule
 from .bus_trip import BusTrip
 from .service import Service
@@ -24,7 +30,8 @@ class Trip(Base):
     description = Column(String(150))
 
     def get_scheduled_buses(self, from_date=None, time_frame=None):
-        schedule = Schedule.get()
+        session = object_session(self)
+        schedule = Schedule.get(session)
         if from_date is None:
             from_date = schedule.tz.now()
         else:
@@ -52,11 +59,11 @@ class Trip(Base):
 
         from_minutes = minutes_since_midnight_int(hours, minutes)
 
-        service = Service.get_service_for_date(from_date_schedule)
+        service = Service.get_service_for_date(session, from_date_schedule)
 
         TimeSchedule.seed_date(from_date)
 
-        query = db_session.query(TimeSchedule, BusTrip)\
+        query = session.query(TimeSchedule, BusTrip)\
             .filter(TimeSchedule.service_id == service.id)\
             .filter(BusTrip.trip_id == self.id)\
             .filter((BusTrip.route_to_id == TimeSchedule.route_to_id) &

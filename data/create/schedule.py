@@ -7,7 +7,6 @@ from tools.datetime import format_time, minutes_since_midnight, Timezone
 
 from imports.database.connectdb import i_engine
 from imports.database.models import (
-    i_engine,
     i_times,
     i_trips
 )
@@ -17,7 +16,6 @@ from ..connectdb import db_session
 from ..models import (
     RouteTo,
     Service,
-    Schedule,
     TimeSchedule,
     Stop
 )
@@ -72,6 +70,6 @@ def run():
     try:
         generate_data()
         db_session.commit()
-    except:
+    except BaseException:
         db_session.rollback()
         raise

@@ -1,6 +1,7 @@
 from datetime import datetime
 from ariadne import ScalarType
 
+
 def serialize_datetime(value):
     return value.isoformat()
 

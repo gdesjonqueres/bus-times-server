@@ -27,10 +27,11 @@ def get_route(code: str):
 
 def get_route_direction(code: str, direction_name: str):
     with i_engine.connect() as conn:
-        padded_code = code.rjust(3, '0')
+        # numeric route codes are left padded with 0
+        select_code = code.rjust(3, '0') if code.isnumeric() else code
         s = select([i_directions])\
             .where(and_(
-                i_directions.c.route_name == padded_code,
+                i_directions.c.route_name == select_code,
                 i_directions.c.direction_name == direction_name))
         res = conn.execute(s)
         row = res.fetchone()
@@ -56,7 +57,7 @@ def get_feed():
         res = conn.execute(s)
         row = res.fetchone()
         if row is None:
-            raise ValueError(f'ImportDB: No feed found')
+            raise ValueError('ImportDB: No feed found')
         return row
 
 

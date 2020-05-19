@@ -1,4 +1,12 @@
-from .base import *
+import uuid
+
+from sqlalchemy import Column, ForeignKey, SmallInteger
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm.session import object_session
+
+from tools.sqlalchemy_guid import GUID
+
+from .base import Base
 from .time_schedule import TimeSchedule
 
 
@@ -26,7 +34,8 @@ class BusTrip(Base):
     minutes = Column(SmallInteger)
 
     def get_timetable(self):
-        query = db_session.query(TimeSchedule)\
+        session = object_session(self)
+        query = session.query(TimeSchedule)\
             .join(BusTrip,
                   (BusTrip.route_to_id == TimeSchedule.route_to_id) &
                   (BusTrip.stop_from_id == TimeSchedule.stop_id))\
@@ -36,7 +45,8 @@ class BusTrip(Base):
         return query.all()
 
     def __repr__(self):
-        return f'<BusTrip route={self.route_to.route.name} stop={self.stop_from.code}>'
+        return f'<BusTrip route={self.route_to.route.name} '
+        f'stop={self.stop_from.code}>'
 
     def to_dict(self):
         return {
@@ -44,5 +54,6 @@ class BusTrip(Base):
             "stop_id": self.stop_from_id,
             "itinary_id": self.route_to_id,
             "minutes": self.minutes,
-            "__comment": f"{self.route_to.route.name} @ {self.stop_from.description}"
+            "__comment": f'{self.route_to.route.name} @ '
+            f'{self.stop_from.description}'
         }

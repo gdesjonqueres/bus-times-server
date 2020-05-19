@@ -1,4 +1,10 @@
-from .base import *
+import uuid
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
+from tools.sqlalchemy_guid import GUID
+
+from .base import Base
 
 
 class RouteTo(Base):
@@ -16,7 +22,8 @@ class RouteTo(Base):
     route_to = Column(String(80), nullable=False)
 
     def __repr__(self):
-        return f'<RouteTo {self.route.name} from={self.route_from} to={self.route_to}>'
+        return f'<RouteTo {self.route.name} from={self.route_from} '
+        f'to={self.route_to}>'
 
     def to_dict(self):
         return {

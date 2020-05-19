@@ -11,16 +11,19 @@ routes:
   - 232-Grouse_Mountain
   - 236-Grouse_Mountain
   - 236-Lonsdale_Quay
-  - 239-Capilano_University
-  - 239-Park_Royal
-  - 240-15th_Street
+  # - 239-Capilano_University # 239 removed ?
+  # - 239-Park_Royal
+  - R2-Marine_Drive_to_Phibbs_Exchange
+  - R2-Marine_Drive_to_Park_Royal
+  # - 240-15th_Street
+  - 240-Lynn_Valley
   # - 240-Vancouver
   - 246-Highland
   # - 246-Downtown
   - 249-Delbrook
   - 249-Lonsdale_Quay
   - 255-Capilano_University
-  # - 255-Dundarave
+  - 255-Dundarave
 
 # {stop description}: {translink stop code}
 stops:
@@ -33,11 +36,14 @@ stops:
   Lonsdale_North@8th: 54145
   Esplanade_West: 54375
   # Lonsdale_North@4th: 54143 # removed ?
+  Lonsdale_North@Keith: 54144
+  Lonsdale_South@3rd: 60380
   Park_Royal: 54411
   Capilano_Mall: 54407
   Bay2@Quay: 54196
   Bay3@Quay: 58724
   Bay4@Quay: 58725
+  Bay16@Quay: 60473
   # Bay7@Quay: 54516
   # Bay8@Quay: 54410
   # Bay9@Quay: 54134
@@ -96,19 +102,29 @@ trips:
       #   stop: Lonsdale_North@4th
       # - route: 230-Upper_Lonsdale
       #   stop: Lonsdale_North@4th
+      - route: 229-Lynn_Valley
+        stop: Lonsdale_North@Keith
+      - route: 230-Upper_Lonsdale
+        stop: Lonsdale_North@Keith
       - route: 232-Grouse_Mountain
         stop: Lonsdale_North@8th
 
   dst06:
     name: "Home > Cap.Mall/P.Royal"
     buses:
-      - route: 239-Park_Royal
+      # - route: 239-Park_Royal
+      #   stop: 3rd_West@Chesterfield
+      - route: 255-Dundarave
         stop: 3rd_West@Chesterfield
+      - route: R2-Marine_Drive_to_Park_Royal
+        stop: Lonsdale_South@3rd
 
   dst07:
     name: "Park Royal > Home"
     buses:
-      - route: 239-Capilano_University
+      # - route: 239-Capilano_University
+      #   stop: Park_Royal
+      - route: R2-Marine_Drive_to_Phibbs_Exchange
         stop: Park_Royal
       - route: 255-Capilano_University
         stop: Park_Royal
@@ -116,19 +132,23 @@ trips:
   dst08:
     name: "Capilano Mall > Home"
     buses:
-      - route: 239-Capilano_University
-        stop: Capilano_Mall
+      # - route: 239-Capilano_University
+      #   stop: Capilano_Mall
+      - route: R2-Marine_Drive_to_Phibbs_Exchange
+        stop: Park_Royal
       - route: 255-Capilano_University
         stop: Capilano_Mall
-      - route: 240-15th_Street
+      - route: 240-Lynn_Valley
         stop: Capilano_Mall
 
   dst09:
     name: "Lonsdale Quay > Home"
     buses:
       - route: 229-Lynn_Valley
-        stop: Bay3@Quay
+        stop: Bay2@Quay
       - route: 230-Upper_Lonsdale
         stop: Bay4@Quay
-      - route: 239-Park_Royal
-        stop: Bay2@Quay
+      - route: 249-Delbrook
+        stop: Bay16@Quay
+      # - route: 239-Park_Royal
+      #   stop: Bay2@Quay

@@ -5,8 +5,7 @@ import csv
 
 from tools.utils import (
     exchange_indexes_values,
-    list_to_dict,
-    has_all_elements
+    list_to_dict
 )
 from tools.datetime import ymd_to_dashed
 
@@ -132,11 +131,13 @@ def filter_trips(descriptor, route_ids, path):
     """Filter data from trips
 
     """
-    return filter_gtfs_file(path, lambda row: row[descriptor['route_id']] in route_ids)
+    return filter_gtfs_file(
+        path, lambda row: row[descriptor['route_id']] in route_ids)
 
 
 def filter_stop_times(descriptor, stop_ids, path):
     """Filter stop times
 
     """
-    return filter_gtfs_file(path, lambda row: row[descriptor['stop_id']] in stop_ids)
+    return filter_gtfs_file(
+        path, lambda row: row[descriptor['stop_id']] in stop_ids)

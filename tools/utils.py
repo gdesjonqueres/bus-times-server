@@ -58,7 +58,8 @@ def save_to_csv(file_name: str, descriptor: list, data: list):
         writer.writerows(data)
 
 
-def save_to_json(file_name: str, data: dict, readable=False, sorted=False, encoder=None):
+def save_to_json(file_name: str, data: dict, readable=False,
+                 sorted=False, encoder=None):
     """Save data to json on disk
 
     """

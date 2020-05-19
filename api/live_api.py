@@ -32,7 +32,7 @@ class LiveApi:
 
         @classmethod
         def factory(cls, bus_trip: BusTrip, scheduled_date: datetime):
-            service = Service.get_service_for_date(scheduled_date)
+            service = Service.get_service_for_date(db_session, scheduled_date)
             schedule = TimeSchedule(route_to=bus_trip.route_to,
                                     stop=bus_trip.stop_from, service=service,
                                     time=scheduled_date.strftime('%H:%M'))

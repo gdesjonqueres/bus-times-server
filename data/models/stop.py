@@ -1,4 +1,10 @@
-from .base import *
+import uuid
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+
+from tools.sqlalchemy_guid import GUID
+
+from .base import Base
 from .bus_trip import BusTrip
 
 

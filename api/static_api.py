@@ -26,7 +26,7 @@ class StaticApi:
         return db_session.query(Trip).all()
 
     def get_schedule(self):
-        return Schedule.get()
+        return Schedule.get(db_session)
 
     def get_trip_by_id(self, id):
         return db_session.query(Trip).filter_by(id=id).one()

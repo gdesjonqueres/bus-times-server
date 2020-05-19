@@ -86,6 +86,6 @@ def run():
             db_session.add(trip)
 
         db_session.commit()
-    except:
+    except BaseException:
         db_session.rollback()
         raise

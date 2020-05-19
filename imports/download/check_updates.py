@@ -7,21 +7,18 @@ from requests.exceptions import ConnectionError
 from colorama import (
     init,
     deinit,
-    reinit,
+    # reinit,
     Fore,
     Back,
     Style
 )
 
-from tools.utils import (
-    list_to_dict,
-    prompt_yes_no_loop as prompt
-)
+from tools.utils import prompt_yes_no_loop as prompt
 
+from data.connectdb import db_session
 from data.models import Schedule
 
 from .. import gtfs_helpers as gtfs
-
 from ..config import paths, VERBOSE
 from . import helpers as dl
 
@@ -59,7 +56,7 @@ def run():
     # Get info about current feed and latest translink feed
     # -----------------------------------------------------------
     #
-    current_version = Schedule.get().version
+    current_version = Schedule.get(db_session).version
     printb(f'* Current Feed Version: {current_version}', 'highlight')
     printb('... Checking Latest Translink Feed ...', 'info')
 

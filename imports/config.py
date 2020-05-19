@@ -3,7 +3,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('archive', nargs='?', default='')
 parser.add_argument('--no-verbose', action='store_true')
-args = parser.parse_args()
+args, _ = parser.parse_known_args()
 
 VERBOSE = not args.no_verbose
 ARCHIVE = args.archive

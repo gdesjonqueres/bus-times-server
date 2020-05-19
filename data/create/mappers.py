@@ -7,8 +7,6 @@ from imports.database.models import (
     i_routes,
     i_directions,
     i_stops,
-    i_times,
-    i_trips,
     i_feed
 )
 
