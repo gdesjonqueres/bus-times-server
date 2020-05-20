@@ -1,3 +1,6 @@
+"""Scalars config
+"""
+
 from datetime import datetime
 from ariadne import ScalarType
 

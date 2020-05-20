@@ -13,8 +13,13 @@ class AsyncHTTPRequests:
         self.timeout = aiohttp.ClientTimeout(total=timeout)
 
     async def _fetch(self, session, key, request: HTTPRequest):
-        async with session.get(request.url, headers=request.headers, params=request.parameters) as response:
-            return key, await response.json() if request.is_accept_json() else await response.text()
+        async with session.get(
+                request.url,
+                headers=request.headers,
+                params=request.parameters) as response:
+            return (key,
+                    await response.json() if request.is_accept_json()
+                    else await response.text())
 
     async def _batch(self, requests_iterator):
         async with aiohttp.ClientSession(timeout=self.timeout) as session:

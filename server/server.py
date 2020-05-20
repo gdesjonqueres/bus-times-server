@@ -1,10 +1,10 @@
+"""Setup Ariadne ASGI server
+"""
+
 from ariadne.asgi import GraphQL
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
-
-from data import config
-config.VERBOSE = True
 
 from .graphql.schema import schema
 

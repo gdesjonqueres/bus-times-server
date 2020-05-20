@@ -2,7 +2,7 @@ import requests
 
 
 class HTTPRequest:
-    """Simple class to perform an HTTP request and hold its state
+    """Simple class to hold state and perform an HTTP request
     """
 
     def __init__(self, url, parameters={}, headers={}):

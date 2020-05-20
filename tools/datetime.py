@@ -3,7 +3,7 @@ import pytz
 
 
 class Timezone:
-    """Factories for datetime in a specific timezone
+    """Helper class to provide localized datetime in a specific timezone
 
     """
 
@@ -59,12 +59,21 @@ class DateTime:
     pass
 
 
-def get_hours_minutes(time_str, separator=':'):
+def get_hours_minutes(time_str: str, separator: str = ':') -> tuple(int, int):
+    """Return the tuple (int hours, int minutes)
+    from a string representing time
+
+    """
     (hours, minutes) = time_str.split(separator)[:2]
     return int(hours), int(minutes)
 
 
-def format_time(time_str, separator=':'):
+def format_time(time_str: str, separator: str = ':') -> str:
+    """Return a properly formated time string
+    making sure that numeric values are on two digits
+    and left padded with '0' if less than 10
+
+    """
     (hours, minutes) = get_hours_minutes(time_str, separator)
     if hours < 10:
         hours = '0' + str(hours)
@@ -73,14 +82,24 @@ def format_time(time_str, separator=':'):
     return f'{hours}{separator}{minutes}'
 
 
-def minutes_since_midnight(time_str: str, separator=':'):
+def minutes_since_midnight(time_str: str, separator: str = ':') -> int:
+    """Return the total number of minutes since midnight for a given time
+
+    """
     (hours, minutes) = get_hours_minutes(time_str, separator)
     return minutes_since_midnight_int(hours, minutes)
 
 
-def minutes_since_midnight_int(hours: int, minutes: int):
+def minutes_since_midnight_int(hours: int, minutes: int) -> int:
+    """Return the total number of minutes since midnight for a given time
+
+    """
     return hours * 60 + minutes
 
 
-def ymd_to_dashed(ymd):
+def ymd_to_dashed(ymd: str) -> str:
+    """Return a 'yyyy-mm-dd' string representation of a date
+    in a 'yyyymmdd' form
+
+    """
     return '-'.join([ymd[0:4], ymd[4:6], ymd[6:]])

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # ------------------------------------------------------------------
-# Import current translink archive in import db and create app data
+# Imports translink archive from current dir in import db and creates app data
 #
 # usage: ./import_gtfs [archive] [--no-verbose]
 # archive: if importing a different archive than current

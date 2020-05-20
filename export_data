@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+# ------------------------------------------------------------------
+# Export app data to json for use in bus-times-app
+#
+# ------------------------------------------------------------------
+
 echo "\n-----------------------------------------------\n" >> ./logs/export.log
 echo "`date "+%Y-%m-%d %H:%M:%S"` Export starting ...\n" >> ./logs/export.log
 

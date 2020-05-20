@@ -1,3 +1,6 @@
+"""Setup the GraphQL schema
+"""
+
 from ariadne import (
     make_executable_schema,
     load_schema_from_path,

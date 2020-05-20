@@ -1,13 +1,16 @@
-from typing import List
+"""Diverse helper functions
+"""
+
+from typing import List, Union
 
 
-def extract_filename_from_path(path_to_file: str):
+def extract_filename_from_path(path_to_file: str) -> str:
     (_, _, filename) = path_to_file.rpartition('/')
     return filename
 
 
-def concat_to_filename(path_to_file: str, str: str):
-    """Concat a string to a filename
+def concat_to_filename(path_to_file: str, str: str) -> str:
+    """Concat str to the file name portion of path_to_file
     leaving extension and path untouched
 
     """
@@ -75,15 +78,16 @@ def save_to_json(file_name: str, data: dict, readable=False,
         json.dump(data, fp, **params)
 
 
-def check_files(validators: List[callable]) -> tuple:
+def check_files(validators: List[callable]) -> tuple(bool, ):
     for validator in validators:
         if not validator[0](validator[1]):
             return (False, validator[1])
     return (True, 'Ok')
 
 
-def prompt_loop(message: str, choices: list, prompt='$ '):
-    """Loop on user input
+def prompt_loop(message: str, choices: list, prompt='$ ') -> Union[False, str]:
+    """Perform a loop displaying a prompt and waiting for a user input
+    Return the user input when it matches the choices otherwise keep looping
 
     """
     while True:
@@ -93,8 +97,9 @@ def prompt_loop(message: str, choices: list, prompt='$ '):
     return False
 
 
-def prompt_yes_no_loop(message, default=False, prompt='$ '):
-    """Loop on Yes/No user input
+def prompt_yes_no_loop(message, default=False, prompt='$ ') -> str:
+    """Perform a loop displaying a prompt and waiting for a Yes/No user input
+    Return either the string 'yes' or 'no'
 
     """
     choices = ['Y', 'y', 'n', 'N']
@@ -114,7 +119,7 @@ def prompt_yes_no_loop(message, default=False, prompt='$ '):
 
 
 def download_file(url: str, filename: str):
-    """Download file and save it to disk
+    """Download the file at url and save it to disk
 
     """
     import requests
@@ -123,9 +128,9 @@ def download_file(url: str, filename: str):
         fh.write(resp.content)
 
 
-def run_validators(validators: List[callable]) -> tuple:
+def run_validators(validators: List[callable]) -> tuple(bool, str):
     """Run a list of validators
-    Return tuple (boolean, message)
+    Return a tuple (True if valid or False, 'Ok' or error message)
 
     """
     for validator in validators:
