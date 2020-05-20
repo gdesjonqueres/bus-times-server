@@ -59,7 +59,7 @@ class DateTime:
     pass
 
 
-def get_hours_minutes(time_str: str, separator: str = ':') -> tuple(int, int):
+def get_hours_minutes(time_str: str, separator: str = ':') -> (int, int):
     """Return the tuple (int hours, int minutes)
     from a string representing time
 

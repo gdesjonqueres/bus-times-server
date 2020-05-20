@@ -78,14 +78,14 @@ def save_to_json(file_name: str, data: dict, readable=False,
         json.dump(data, fp, **params)
 
 
-def check_files(validators: List[callable]) -> tuple(bool, ):
+def check_files(validators: List[callable]) -> (bool, ):
     for validator in validators:
         if not validator[0](validator[1]):
             return (False, validator[1])
     return (True, 'Ok')
 
 
-def prompt_loop(message: str, choices: list, prompt='$ ') -> Union[False, str]:
+def prompt_loop(message: str, choices: list, prompt='$ ') -> Union[bool, str]:
     """Perform a loop displaying a prompt and waiting for a user input
     Return the user input when it matches the choices otherwise keep looping
 
@@ -128,7 +128,7 @@ def download_file(url: str, filename: str):
         fh.write(resp.content)
 
 
-def run_validators(validators: List[callable]) -> tuple(bool, str):
+def run_validators(validators: List[callable]) -> (bool, str):
     """Run a list of validators
     Return a tuple (True if valid or False, 'Ok' or error message)
 
