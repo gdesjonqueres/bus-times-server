@@ -12,7 +12,7 @@ from tools.utils import (
 from .. import gtfs_helpers as gtfs
 
 from ..config import (
-    paths,
+    PATHS,
     TRANSLINK_GTFS_DL_PAGE,
     IMPORTS_ROOT_DIR
 )
@@ -49,7 +49,7 @@ def get_latest_archive_info():
 
 
 def get_local_archive(gtfsdata_info):
-    path_to_file = f'{paths["archives-dir"]}/{gtfsdata_info["archive_name"]}'
+    path_to_file = f'{PATHS["archives-dir"]}/{gtfsdata_info["archive_name"]}'
     archived = Path(path_to_file)
     if archived.is_file():
         return path_to_file
@@ -87,7 +87,7 @@ def download_archive(gtfsdata_info, directory):
 def store_archive(path_to_archive):
     try:
         subprocess.run(
-            ['cp', path_to_archive, paths["archives-dir"]], check=True)
+            ['cp', path_to_archive, PATHS["archives-dir"]], check=True)
     except subprocess.CalledProcessError as err:
         raise Exception(f'Unable to copy archive to archive dir: {err.output}')
 
@@ -96,14 +96,14 @@ def set_archive_current(path_to_archive):
     filename = extract_filename_from_path(path_to_archive)
     try:
         subprocess.run(
-            f'rm -rf {paths["current-dir"]}/*', shell=True, check=True)
+            f'rm -rf {PATHS["current-dir"]}/*', shell=True, check=True)
         subprocess.run(
-            ['cp', path_to_archive, paths["current-dir"]], check=True)
+            ['cp', path_to_archive, PATHS["current-dir"]], check=True)
         subprocess.run(['unzip', '-q', filename],
-                       cwd=paths["current-dir"], check=True)
+                       cwd=PATHS["current-dir"], check=True)
         subprocess.run(f'rm {filename}', shell=True,
-                       cwd=paths["current-dir"], check=True)
+                       cwd=PATHS["current-dir"], check=True)
         subprocess.run(f"echo '{filename}' > current",
-                       cwd=paths["current-dir"], check=True, shell=True)
+                       cwd=PATHS["current-dir"], check=True, shell=True)
     except subprocess.CalledProcessError as err:
         raise Exception(f'Unable to copy archive to current dir: {err.output}')

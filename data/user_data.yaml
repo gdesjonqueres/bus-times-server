@@ -57,7 +57,7 @@ services:
 
 trips:
   dst01:
-    name: "Capilano Bridge > Home"
+    name: Capilano Bridge > Home
     buses:
       - route: 232-Phibbs_Exchange
         stop: 232@Capilano_Bridge
@@ -67,7 +67,7 @@ trips:
         stop: 246@Capilano_Bridge
 
   dst02:
-    name: "Home > Capilano Bridge"
+    name: Home > Capilano Bridge
     buses:
       - route: 232-Grouse_Mountain
         stop: Lonsdale_North@8th
@@ -80,7 +80,7 @@ trips:
         time: 39
 
   dst03:
-    name: "Delbrook Center > Home"
+    name: Delbrook Center > Home
     buses:
       - route: 232-Phibbs_Exchange
         stop: 232@Delbrook_Center
@@ -88,7 +88,7 @@ trips:
         stop: 249@Delbrook_Center
 
   dst04:
-    name: "Home > Delbrook Center"
+    name: Home > Delbrook Center
     buses:
       - route: 232-Grouse_Mountain
         stop: Lonsdale_North@8th
@@ -96,7 +96,7 @@ trips:
         stop: 3rd_West@Chesterfield
 
   dst05:
-    name: "Home > Upper Lonsdale"
+    name: Home > Upper Lonsdale
     buses:
       # - route: 229-Lynn_Valley
       #   stop: Lonsdale_North@4th
@@ -110,7 +110,7 @@ trips:
         stop: Lonsdale_North@8th
 
   dst06:
-    name: "Home > Cap.Mall/P.Royal"
+    name: Home > Cap.Mall/P.Royal
     buses:
       # - route: 239-Park_Royal
       #   stop: 3rd_West@Chesterfield
@@ -120,7 +120,7 @@ trips:
         stop: Lonsdale_South@3rd
 
   dst07:
-    name: "Park Royal > Home"
+    name: Park Royal > Home
     buses:
       # - route: 239-Capilano_University
       #   stop: Park_Royal
@@ -130,7 +130,7 @@ trips:
         stop: Park_Royal
 
   dst08:
-    name: "Capilano Mall > Home"
+    name: Capilano Mall > Home
     buses:
       # - route: 239-Capilano_University
       #   stop: Capilano_Mall
@@ -142,7 +142,7 @@ trips:
         stop: Capilano_Mall
 
   dst09:
-    name: "Lonsdale Quay > Home"
+    name: Lonsdale Quay > Home
     buses:
       - route: 229-Lynn_Valley
         stop: Bay2@Quay

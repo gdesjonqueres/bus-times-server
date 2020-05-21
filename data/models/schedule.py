@@ -6,7 +6,6 @@ from sqlalchemy.orm import reconstructor
 from tools.datetime import Timezone
 
 from .base import Base
-# from .base import *
 
 
 class Schedule(Base):

@@ -7,12 +7,11 @@ args, _ = parser.parse_known_args()
 
 VERBOSE = not args.no_verbose
 ARCHIVE = args.archive
-
+DB_PATH = 'imports/database/import.db'
+DB_URL = f'sqlite:///{DB_PATH}'
 TRANSLINK_GTFS_DL_PAGE = 'https://developer.translink.ca/ServicesGtfs/GtfsData'
-
 IMPORTS_ROOT_DIR = './imports/'
-
-paths = {
+PATHS = {
     'download-dir': f'{IMPORTS_ROOT_DIR}download/',
     'archives-dir': f'{IMPORTS_ROOT_DIR}download/archives/',
     'current-dir': f'{IMPORTS_ROOT_DIR}download/current/',

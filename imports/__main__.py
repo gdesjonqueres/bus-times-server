@@ -17,7 +17,7 @@ def run():
         set_archive_current(config.ARCHIVE)
     try:
         subprocess.run('./fill_importdb',
-                       cwd=config.paths['importdb-dir'], check=True)
+                       cwd=config.PATHS['importdb-dir'], check=True)
     except subprocess.CalledProcessError as err:
         raise Exception(
             f'Unable to execute import db fill script: {err.output}')

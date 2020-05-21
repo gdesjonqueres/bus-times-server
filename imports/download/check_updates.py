@@ -19,7 +19,7 @@ from data.connectdb import db_session
 from data.models import Schedule
 
 from .. import gtfs_helpers as gtfs
-from ..config import paths, VERBOSE
+from ..config import PATHS, VERBOSE
 from . import helpers as dl
 
 
@@ -91,7 +91,7 @@ def run():
             # Using current archive as import
             try:
                 subprocess.run(
-                    ['cp', archived_file, paths['tmp-dir']], check=True)
+                    ['cp', archived_file, PATHS['tmp-dir']], check=True)
             except subprocess.CalledProcessError as err:
                 raise SystemExit(
                     b(f'... Unable to copy current local archive ({err.output}), exiting.', 'danger'))
@@ -114,7 +114,7 @@ def run():
         printb(
             f'... Downloading from {latest_data["download_url"]} ...', 'info')
         try:
-            dl.download_archive(latest_data, paths['tmp-dir'])
+            dl.download_archive(latest_data, PATHS['tmp-dir'])
         except ConnectionError as err:
             raise SystemExit(
                 b(f'... Unable to download from Translink server ({err}), exiting.', 'danger'))
@@ -130,7 +130,7 @@ def run():
     printb('... Unzipping ...', 'info')
     try:
         subprocess.run(['unzip', latest_data['archive_name']],
-                       cwd=paths['tmp-dir'], check=True)
+                       cwd=PATHS['tmp-dir'], check=True)
     except subprocess.CalledProcessError as err:
         raise SystemExit(
             b(f'... Unable to unzip downloaded archive ({err.output}), exiting.', 'danger'))
@@ -139,14 +139,14 @@ def run():
     print('\n')
 
     printb('* Checking downloaded archive ...', 'highlight')
-    (is_valid, error) = dl.check_archive(paths['tmp-dir'])
+    (is_valid, error) = dl.check_archive(PATHS['tmp-dir'])
     if not is_valid:
         raise SystemExit(
             b(f'... Archive is not valid ({error}), exiting.', 'danger'))
     printb('... Done.', 'success')
 
     latest_feed_info = gtfs.parse_feed_info(
-        gtfs.get_feed_info(paths['tmp-dir'] + 'feed_info.txt'))
+        gtfs.get_feed_info(PATHS['tmp-dir'] + 'feed_info.txt'))
 
     print('\n')
 
@@ -163,7 +163,7 @@ def run():
     # Move latest feed to current folder and archive it
     # -----------------------------------------------------------
     #
-    path_to_archive = f'{paths["tmp-dir"]}{latest_data["archive_name"]}'
+    path_to_archive = f'{PATHS["tmp-dir"]}{latest_data["archive_name"]}'
     choice = prompt(
         b('Do you want to use these data for import?', 'prompt'), 'yes')
     if choice == 'yes':
