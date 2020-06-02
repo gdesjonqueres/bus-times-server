@@ -110,7 +110,7 @@ def prompt_yes_no_loop(message, default=False, prompt='$ ') -> str:
             choice_str = '[Y/n]'
         elif default == 'no':
             choice_str = '[N/y]'
-    choice = prompt_loop(f'{message} {choice_str}', choices)
+    choice = prompt_loop(f'{message} {choice_str}', choices, prompt)
     if choice == '':
         return default
     if choice in ['Y', 'y']:
