@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import Column, ForeignKey, SmallInteger, Integer, String
 from sqlalchemy.orm import relationship, reconstructor
+from sqlalchemy.orm.session import Session
 
 from tools.sqlalchemy_guid import GUID
 from tools.datetime import get_hours_minutes
@@ -43,7 +44,8 @@ class TimeSchedule(Base):
     @reconstructor
     def __init_on_load__(self):
         # set object date using seed date from class and object time
-        date_seed = self.date_seed if self.date_seed else Schedule.get().tz.now()
+        date_seed = self.date_seed if self.date_seed else Schedule.get(
+            Session.object_session(self)).tz.now()
 
         (hours, minutes) = get_hours_minutes(self.time)
         # if scheduled time is hour 24 then time is 0am, hour 25 is 1am
