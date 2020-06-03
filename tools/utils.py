@@ -97,9 +97,9 @@ def prompt_loop(message: str, choices: list, prompt='$ ') -> Union[bool, str]:
     return False
 
 
-def prompt_yes_no_loop(message, default=False, prompt='$ ') -> str:
+def prompt_yes_no_loop(message, default=False, prompt='$ ') -> bool:
     """Perform a loop displaying a prompt and waiting for a Yes/No user input
-    Return either the string 'yes' or 'no'
+    Return either True for 'yes' or False for 'no'
 
     """
     choices = ['Y', 'y', 'n', 'N']
@@ -112,10 +112,10 @@ def prompt_yes_no_loop(message, default=False, prompt='$ ') -> str:
             choice_str = '[N/y]'
     choice = prompt_loop(f'{message} {choice_str}', choices, prompt)
     if choice == '':
-        return default
+        return default == 'yes'
     if choice in ['Y', 'y']:
-        return 'yes'
-    return 'no'
+        return True
+    return False
 
 
 def download_file(url: str, filename: str):

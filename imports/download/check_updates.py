@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import subprocess
+import sys
+from subprocess import run as runp, CalledProcessError
 
 from requests.exceptions import ConnectionError
 
@@ -23,191 +24,201 @@ from ..config import PATHS, VERBOSE
 from . import helpers as dl
 
 
+colors = {
+    'info': Fore.BLUE,
+    'highlight': Fore.CYAN + Style.BRIGHT,
+    'danger': Back.RED + Fore.WHITE,
+    'success': Back.GREEN + Fore.WHITE,
+    'prompt': Fore.YELLOW
+}
+
+
+def b(text, color):
+    return f'{Style.RESET_ALL}{colors[color]}{text}'
+
+
+def printb(text, color):
+    print(b(text, color))
+
+
+def n(text):
+    return text + '\n'
+
+
+def nb(text):
+    return '\n' + text
+
+
+def print_info(text):
+    printb(text, 'info')
+
+
+def print_title(text):
+    printb(text, 'highlight')
+
+
+def print_success(text):
+    printb(text, 'success')
+
+
+def format_error(text):
+    return b(text, 'danger')
+
+
+def prompt(text, default):
+    return prompt_yes_no_loop(b(text, 'prompt'), default, '')
+
+
+class UpdateError(BaseException):
+    pass
+
+
 def run():
-    #
-    # -----------------------------------------------------------
-    # Set up coloring and formating
-    # -----------------------------------------------------------
-    #
-    init(autoreset=True)
-    colors = {
-        'info': Fore.BLUE,
-        'highlight': Fore.CYAN + Style.BRIGHT,
-        'danger': Back.RED + Fore.WHITE,
-        'success': Back.GREEN + Fore.WHITE,
-        'prompt': Fore.YELLOW
-    }
+    try:
+        # setup colorama
+        init(autoreset=True)
 
-    def b(text, color):
-        return f'{colors[color]}{text}'
+        # cleanup temp files
+        _cleanup()
 
-    def printb(text, color):
-        print(b(text, color))
+        current_version = Schedule.get(db_session).version
+        print_title(f'* Current Feed Version: {current_version}')
 
-    def n(text):
-        return text + '\n'
+        print_info('... Checking Latest Translink Feed ...')
+        latest_data = _get_current_feeds()
 
-    def nb(text):
-        return '\n' + text
+        local_archive = dl.get_local_archive(latest_data)
+        if local_archive:
+            print_info(f'... Latest feed of "{latest_data["published_name"]}" '
+                       f'already archived (as {latest_data["archive_name"]})')
+            do_download = _ask_if_download()
+        else:
+            print_title(nb('* New feed found.'))
+            do_download = True
 
-    def print_info(text):
-        printb(text, 'info')
+        if do_download:
+            print_info(f'... Downloading {latest_data["download_url"]} ...')
+            _download_feed(latest_data)
+        else:
+            print_title(nb('* Using local archive.'))
+            _use_archive(local_archive)
 
-    def print_title(text):
-        printb(text, 'highlight')
+        print_info('... Unzipping ...')
+        _unzip_archive(latest_data)
 
-    def print_success(text):
-        printb(text, 'success')
+        print_title('* Checking archive ...')
+        _check_archive()
 
-    def prompt(text, default):
-        return prompt_yes_no_loop(b(text, 'prompt'), default, '')
+        print_title('* Feed Details')
+        latest_feed_info = _get_archive_feed_info()
+        _print_archive_info(latest_feed_info)
 
-    def format_error_message(text):
-        return b(text, 'danger')
+        if prompt('Do you want to use this feed as current?', 'yes'):
+            _set_feed_current(latest_data)
 
-    class ExitError(SystemExit):
-        def __init__(self, error_message):
-            super().__init__(format_error_message(
-                error_message + '. Exiting...'))
+        if prompt('Proceed and run imports?', 'yes'):
+            _do_imports()
 
-    #
-    # -----------------------------------------------------------
-    # Clean up
-    # -----------------------------------------------------------
-    #
+        print_success(n('All good, exiting.'))
+    except BaseException as err:
+        sys.exit(format_error(err))
+    finally:
+        _cleanup()
+
+
+def _cleanup():
     dl.cleanup_tmp_files()
+    deinit()
 
-    #
-    # -----------------------------------------------------------
-    # Get info about current feed and latest translink feed
-    # -----------------------------------------------------------
-    #
-    current_version = Schedule.get(db_session).version
-    print_title(f'* Current Feed Version: {current_version}')
-    print_info('... Checking Latest Translink Feed ...')
 
+def _cleanup_and_exit():
+    _cleanup()
+    sys.exit(0)
+
+
+def _get_current_feeds():
     try:
         latest_data = dl.get_latest_archive_info()
     except ConnectionError as err:
-        raise ExitError(f'... Unable to contact Translink server ({err})')
+        raise UpdateError(f'... Unable to connect to server ({err})')
+    return latest_data
 
-    #
-    # -----------------------------------------------------------
-    # Check if latest feed has already been archived
-    # -----------------------------------------------------------
-    #
-    do_download = True
-    archived_file = dl.get_local_archive(latest_data)
-    if archived_file:
-        print_info(f'... Latest feed of "{latest_data["published_name"]}"'
-                   f' is already archived (as {latest_data["archive_name"]})')
 
-        choice = prompt(nb('Re-download archive?'), 'no')
-        if choice == 'no':
-            choice = prompt(nb('Proceed and import current archive?'), 'no')
-            if choice == 'no':
-                exit(0)
+def _ask_if_download():
+    if not prompt(nb('Re-download archive?'), 'no'):
+        if not prompt(nb('Proceed and use local archive?'), 'no'):
+            _cleanup_and_exit()
+        return False
+    return True
 
-            # Using current archive as import
-            try:
-                subprocess.run(
-                    ['cp', archived_file, PATHS['tmp-dir']], check=True)
-            except subprocess.CalledProcessError as err:
-                raise ExitError(
-                    f'... Unable to copy current local archive ({err.output})')
-            do_download = False
-            print_title(nb('* Using archived feed.'))
-    else:
-        print_title(nb('* New feed found.'))
 
-    #
-    # -----------------------------------------------------------
-    # Download latest feed
-    # -----------------------------------------------------------
-    #
-    if do_download:
-        print_info(f'... Downloading from {latest_data["download_url"]} ...')
-        try:
-            dl.download_archive(latest_data, PATHS['tmp-dir'])
-        except ConnectionError as err:
-            raise ExitError(
-                f'... Unable to download from Translink server ({err})')
-        print_success(n('... Done.'))
-
-    #
-    # -----------------------------------------------------------
-    # Unzip and check dowloaded feed
-    # -----------------------------------------------------------
-    #
-    print_info('... Unzipping ...')
+def _use_archive(archived_file):
     try:
-        subprocess.run(['unzip', latest_data['archive_name']],
-                       cwd=PATHS['tmp-dir'], check=True)
-    except subprocess.CalledProcessError as err:
-        raise ExitError(
-            f'... Unable to unzip downloaded archive ({err.output})')
+        runp(['cp', archived_file, PATHS['tmp-dir']], check=True)
+    except CalledProcessError as err:
+        raise UpdateError(
+            f'... Unable to use local archive ({err})')
+
+
+def _download_feed(latest_data):
+    try:
+        dl.download_archive(latest_data, PATHS['tmp-dir'])
+    except ConnectionError as err:
+        raise UpdateError(f'... Unable to download from Translink ({err})')
     print_success(n('... Done.'))
 
-    print_title('* Checking downloaded archive ...')
+
+def _unzip_archive(latest_data):
+    try:
+        runp(['unzip', latest_data['archive_name']],
+             cwd=PATHS['tmp-dir'], check=True)
+    except Exception as err:
+        raise UpdateError(f'... Unable to unzip archive ({err})')
+    print_success(n('... Done.'))
+
+
+def _check_archive():
     (is_valid, error) = dl.check_archive(PATHS['tmp-dir'])
     if not is_valid:
-        raise ExitError(f'... Archive is not valid ({error})')
+        raise UpdateError(f'... Archive is not valid ({error})')
     print_success(n('... Done.'))
 
-    latest_feed_info = gtfs.parse_feed_info(
-        gtfs.get_feed_info(PATHS['tmp-dir'] + 'feed_info.txt'))
 
-    print_title('* Latest Feed')
+def _get_archive_feed_info():
+    feed_infos = gtfs.get_feed_info(PATHS['tmp-dir'] + 'feed_info.txt')
+    return gtfs.parse_feed_info(feed_infos)
+
+
+def _print_archive_info(latest_feed_info):
     print_info(f'... Version: {latest_feed_info["version"]}')
     print_info(f'... Published: {latest_feed_info["published"]}')
-    print_info(n(f'... Schedule: {latest_feed_info["validity"]["begin"]} - '
-                 f'{latest_feed_info["validity"]["end"]}'))
+    print_info(n(f'... Schedule: {latest_feed_info["validity"]["begin"]} -'
+                 f' {latest_feed_info["validity"]["end"]}'))
 
-    #
-    # -----------------------------------------------------------
-    # Move latest feed to current folder and archive it
-    # -----------------------------------------------------------
-    #
+
+def _set_feed_current(latest_data):
+    """Move latest feed to current folder and archive it
+
+    """
     path_to_archive = f'{PATHS["tmp-dir"]}{latest_data["archive_name"]}'
-    choice = prompt('Do you want to use these data for import?', 'yes')
-    if choice == 'yes':
-        try:
-            dl.set_archive_current(path_to_archive)
-            dl.store_archive(path_to_archive)
-        except Exception as err:
-            raise ExitError(f'... Problem using archive ({err})')
-        print_success(n('... Done.'))
+    try:
+        dl.set_archive_current(path_to_archive)
+        dl.store_archive(path_to_archive)
+    except Exception as err:
+        raise UpdateError(f'... Problem using archive ({err})')
+    print_success(n('... Done.'))
 
-    #
-    # -----------------------------------------------------------
-    # Import new gtfs data into app database
-    # -----------------------------------------------------------
-    #
-    # choice = prompt(f'Import current data into app?{Style.RESET_ALL}', 'yes')
-    choice = prompt('Import current data into app?', 'yes')
-    if choice == 'yes':
-        modifier = '' if VERBOSE else ' --no-verbose'
-        try:
-            subprocess.run(f'./import_gtfs{modifier}',
-                           shell=True, cwd='./', check=True)
-        except subprocess.CalledProcessError as err:
-            raise ExitError(f'... Problem importing archive ({err.output})')
-        # reinit()
-        print_success(n('... Done.'))
 
-    #
-    # -----------------------------------------------------------
-    # Clean up
-    # -----------------------------------------------------------
-    #
-    choice = prompt('Clean up temporary import files?', 'yes')
-    if choice == 'yes':
-        dl.cleanup_tmp_files()
-        print_success(n('... Done.'))
+def _do_imports():
+    """Import new gtfs data into app database
 
-    print_success(n('All good, exiting.'))
-
-    deinit()
+    """
+    modifier = '' if VERBOSE else ' --no-verbose'
+    try:
+        runp(f'./import_gtfs{modifier}', shell=True, cwd='./', check=True)
+    except CalledProcessError as err:
+        raise UpdateError(f'... Problem importing archive ({err})')
+    print_success(n('... Done.'))
 
 
 if __name__ == '__main__':

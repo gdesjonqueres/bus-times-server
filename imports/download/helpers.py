@@ -1,4 +1,4 @@
-import subprocess
+from subprocess import run as runp  # , CalledProcessError
 import requests
 from bs4 import BeautifulSoup
 from pathlib import Path
@@ -30,7 +30,7 @@ archive_validators = {
 
 
 def cleanup_tmp_files():
-    subprocess.run('rm -rf ./tmp/*', shell=True, cwd=IMPORTS_ROOT_DIR)
+    runp('rm -rf ./tmp/*', shell=True, cwd=IMPORTS_ROOT_DIR)
 
 
 def get_latest_archive_info():
@@ -86,24 +86,20 @@ def download_archive(gtfsdata_info, directory):
 
 def store_archive(path_to_archive):
     try:
-        subprocess.run(
-            ['cp', path_to_archive, PATHS["archives-dir"]], check=True)
-    except subprocess.CalledProcessError as err:
-        raise Exception(f'Unable to copy archive to archive dir: {err.output}')
+        runp(['cp', path_to_archive, PATHS["archives-dir"]], check=True)
+    except Exception as err:
+        raise Exception(f'Unable to copy to archive dir: {err}')
 
 
 def set_archive_current(path_to_archive):
     filename = extract_filename_from_path(path_to_archive)
     try:
-        subprocess.run(
-            f'rm -rf {PATHS["current-dir"]}/*', shell=True, check=True)
-        subprocess.run(
-            ['cp', path_to_archive, PATHS["current-dir"]], check=True)
-        subprocess.run(['unzip', '-q', filename],
-                       cwd=PATHS["current-dir"], check=True)
-        subprocess.run(f'rm {filename}', shell=True,
-                       cwd=PATHS["current-dir"], check=True)
-        subprocess.run(f"echo '{filename}' > current",
-                       cwd=PATHS["current-dir"], check=True, shell=True)
-    except subprocess.CalledProcessError as err:
-        raise Exception(f'Unable to copy archive to current dir: {err.output}')
+        runp(f'rm -rf {PATHS["current-dir"]}/*', shell=True, check=True)
+        runp(['cp', path_to_archive, PATHS["current-dir"]], check=True)
+        runp(['unzip', '-q', filename], cwd=PATHS["current-dir"], check=True)
+        runp(f'rm {filename}', shell=True,
+             cwd=PATHS["current-dir"], check=True)
+        runp(f"echo '{filename}' > current",
+             cwd=PATHS["current-dir"], check=True, shell=True)
+    except Exception as err:
+        raise Exception(f'Unable to copy archive to current dir: {err}')
