@@ -65,6 +65,10 @@ def format_error(text):
     return b(text, 'danger')
 
 
+def exit_with_error(error):
+    sys.exit(format_error(error) + f'{Style.RESET_ALL}')
+
+
 def prompt(text, default):
     return prompt_yes_no_loop(b(text, 'prompt'), default, '')
 
@@ -78,8 +82,7 @@ def run():
         # setup colorama
         init(autoreset=True)
 
-        # cleanup temp files
-        _cleanup()
+        dl.cleanup_tmp_files()
 
         current_version = Schedule.get(db_session).version
         print_title(f'* Current Feed Version: {current_version}')
@@ -118,22 +121,19 @@ def run():
 
         if prompt('Proceed and run imports?', 'yes'):
             _do_imports()
-
-        print_success(n('All good, exiting.'))
     except BaseException as err:
-        sys.exit(format_error(err))
+        exit_with_error(err)
+    else:
+        print_success(nb('All good.'))
     finally:
         _cleanup()
 
 
 def _cleanup():
-    dl.cleanup_tmp_files()
+    if prompt(nb('Clean up temporary import files?'), 'yes'):
+        dl.cleanup_tmp_files()
+        print_success('... Done.')
     deinit()
-
-
-def _cleanup_and_exit():
-    _cleanup()
-    sys.exit(0)
 
 
 def _get_current_feeds():
@@ -147,7 +147,7 @@ def _get_current_feeds():
 def _ask_if_download():
     if not prompt(nb('Re-download archive?'), 'no'):
         if not prompt(nb('Proceed and use local archive?'), 'no'):
-            _cleanup_and_exit()
+            sys.exit()
         return False
     return True
 
